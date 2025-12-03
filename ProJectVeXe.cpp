@@ -561,42 +561,136 @@ void lockOrCancelTicket() {
     }
 }
 void revenueReport() {
-    printf("=== BAO CAO THONG KE & DOANH THU ===\n");
+    printf("=== BAO CAO DOANH THU ===\n");
 
-    if (tripCount == 0) {
-        printf("Khong co chuyen xe nao!\n");
+    if (ticketCount == 0) {
+        printf("❌ Khong co du lieu de bao cao!\n");
         return;
     }
 
-    printf("%-10s | %-10s | %-10s | %-10s | %-12s\n",
-           "TripID", "Dat ve", "Thanh toan", "Huy ve", "Doanh thu");
-    printf("--------------------------------------------------------------\n");
+    char typeStr[10];
+    int type;
 
-    for (int i = 0; i < tripCount; i++) {
-        int booked = 0, paid = 0, canceled = 0;
+    printf("Chon loai bao cao:\n");
+    printf("1. Bao cao doanh thu tong\n");
+    printf("2. Bao cao theo tung chuyen xe\n");
+    printf("3. Bao cao theo khoang thoi gian\n");
+    printf("Nhap lua chon: ");
+
+    fgets(typeStr, sizeof(typeStr), stdin);
+    type = atoi(typeStr);
+
+    if (type == 1) {
+        double totalRevenue = 0;
+        int paidCount = 0;
+
+        for (int i = 0; i < ticketCount; i++) {
+            if (tickets[i].paymentStatus == 1) {
+                totalRevenue += tickets[i].price;
+                paidCount++;
+            }
+        }
+
+        printf("\n=== BAO CAO DOANH THU TONG ===\n");
+        printf("Tong doanh thu: %.0lf VND\n", totalRevenue);
+        printf("Tong ve da thanh toan: %d\n", paidCount);
+        return;
+    }
+
+    else if (type == 2) {
+        printf("\ntripId   | Tong ve | Da thanh toan | Huy | Con hieu luc | Doanh thu\n");
+        printf("-----------------------------------------------------------------------\n");
+
+        for (int i = 0; i < tripCount; i++) {
+
+            int total = 0, paid = 0, canceled = 0, active = 0;
+            double revenue = 0;
+
+            for (int j = 0; j < ticketCount; j++) {
+                if (strcmp(tickets[j].tripId, trips[i].tripId) == 0) {
+                    total++;
+
+                    if (tickets[j].paymentStatus == 1) {
+                        paid++;
+                        revenue += tickets[j].price;
+                    }
+                    else if (tickets[j].paymentStatus == -1) {
+                        canceled++;
+                    }
+                    else if (tickets[j].paymentStatus == 0) {
+                        active++;
+                    }
+                }
+            }
+
+            printf("%-8s | %-7d | %-15d | %-3d | %-12d | %.0lf\n",
+                   trips[i].tripId, total, paid, canceled, active, revenue);
+        }
+        return;
+    }
+
+    else if (type == 3) {
+        char start[20], end[20];
+        int ds, ms, ys, de, me, ye;
+
+        printf("Nhap ngay bat dau (dd/mm/yyyy): ");
+        fgets(start, sizeof(start), stdin);
+        start[strcspn(start, "\n")] = 0;
+
+        printf("Nhap ngay ket thuc (dd/mm/yyyy): ");
+        fgets(end, sizeof(end), stdin);
+        end[strcspn(end, "\n")] = 0;
+
+        if (sscanf(start, "%d/%d/%d", &ds, &ms, &ys) != 3 ||
+            sscanf(end, "%d/%d/%d", &de, &me, &ye) != 3) {
+            printf("❌ Ngay thang khong hop le!\n");
+            return;
+        }
+
+        int total = 0, paid = 0, canceled = 0, active = 0;
         double revenue = 0;
 
-        for (int j = 0; j < ticketCount; j++) {
-            if (strcmp(tickets[j].tripId, trips[i].tripId) == 0) {
+        for (int i = 0; i < ticketCount; i++) {
+            int d, m, y;
+            sscanf(tickets[i].date, "%d/%d/%d", &d, &m, &y);
 
-                if (tickets[j].paymentStatus == 1) {
+            long dateV = y * 10000 + m * 100 + d;
+            long startV = ys * 10000 + ms * 100 + ds;
+            long endV = ye * 10000 + me * 100 + de;
+
+            if (dateV >= startV && dateV <= endV) {
+                total++;
+
+                if (tickets[i].paymentStatus == 1) {
                     paid++;
-                    revenue += tickets[j].price;
-                } 
-                else if (tickets[j].paymentStatus == -1) {
+                    revenue += tickets[i].price;
+                }
+                else if (tickets[i].paymentStatus == -1) {
                     canceled++;
-                } 
-                else if (tickets[j].paymentStatus == 0) {
-                    booked++;
+                }
+                else if (tickets[i].paymentStatus == 0) {
+                    active++;
                 }
             }
         }
 
-        printf("%-10s | %-10d | %-10d | %-10d | %-12.2lf\n",
-               trips[i].tripId, booked + paid + canceled, paid, canceled, revenue);
+        if (total == 0) {
+            printf("❌ Khong co du lieu trong khoang thoi gian nay!\n");
+            return;
+        }
+
+        printf("\n=== BAO CAO THEO THOI GIAN ===\n");
+        printf("Tong ve: %d\n", total);
+        printf("Tong doanh thu: %.0lf\n", revenue);
+        printf("So ve huy: %d\n", canceled);
+        printf("So ve con hieu luc: %d\n", active);
+        return;
+    }
+
+    else {
+        printf("❌ Loai bao cao khong hop le!\n");
     }
 }
-
 
 int main() {
     int choice;
