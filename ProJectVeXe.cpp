@@ -43,6 +43,8 @@ int tripCount = 0;
 struct Ticket tickets[100];
 int ticketCount = 0;
 
+char check;
+
 
 int isLeapYear(int year) {
     return (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0);
@@ -58,17 +60,6 @@ int isValidDate(int d, int m, int y) {
 
     return d <= daysInMonth[m];
 }
-void inputString(char *prompt, char *str, int size) {
-    do {
-        printf("%s", prompt);
-        fgets(str, size, stdin);
-        str[strcspn(str, "\n")] = '\0';  
-        if (strlen(str) == 0) {
-            printf("❌ Không được để trống! Vui lòng nhập lại.\n");
-        }
-    } while (strlen(str) == 0);
-}
-
 
 void addTrip() {
     struct Trip t;
@@ -78,7 +69,7 @@ void addTrip() {
     fgets(t.tripId, sizeof(t.tripId), stdin);
     t.tripId[strcspn(t.tripId, "\n")] = '\0';
     
-    while(strlen(t.tripId) == 0) {
+    while(strlen(t.tripId) == 0 || sscanf(t.tripId, " %c", &check) != 1) {
     printf("Khong duoc de trong! Vui long nhap lai: ");
     fgets(t.tripId, sizeof(t.tripId), stdin);
     t.tripId[strcspn(t.tripId, "\n")] = '\0';
@@ -87,7 +78,7 @@ void addTrip() {
     fgets(t.departure.name, sizeof(t.departure.name), stdin);
     t.departure.name[strcspn(t.departure.name, "\n")] = '\0';
     
-    while(strlen(t.departure.name) == 0) {
+    while(strlen(t.departure.name) == 0 || sscanf(t.departure.name, " %c", &check) != 1) {
     printf("Khong duoc de trong! Vui long nhap lai: ");
     fgets(t.departure.name, sizeof(t.departure.address), stdin);
     t.departure.name[strcspn(t.departure.name, "\n")] = '\0';
@@ -97,7 +88,7 @@ void addTrip() {
     fgets(t.departure.address, sizeof(t.departure.address), stdin);
     t.departure.address[strcspn(t.departure.address, "\n")] = '\0';
     
-    while(strlen(t.departure.address) == 0) {
+    while(strlen(t.departure.address) == 0 || sscanf(t.departure.address, " %c", &check) != 1) {
     printf("Khong duoc de trong! Vui long nhap lai: ");
     fgets(t.departure.address, sizeof(t.departure.address), stdin);
     t.departure.address[strcspn(t.departure.address, "\n")] = '\0';
@@ -107,7 +98,7 @@ void addTrip() {
     fgets(t.destination.name, sizeof(t.destination.name), stdin);
     t.destination.name[strcspn(t.destination.name, "\n")] = '\0';
     
-    while(strlen(t.destination.name) == 0) {
+    while(strlen(t.destination.name) == 0 || sscanf(t.destination.name, " %c", &check) != 1) {
     printf("Khong duoc de trong! Vui long nhap lai: ");
     fgets(t.destination.name, sizeof(t.destination.name), stdin);
     t.destination.name[strcspn(t.destination.name, "\n")] = '\0';
@@ -117,7 +108,7 @@ void addTrip() {
     fgets(t.destination.address, sizeof(t.destination.address), stdin);
     t.destination.address[strcspn(t.destination.address, "\n")] = '\0';
     
-    while(strlen(t.destination.address) == 0) {
+    while(strlen(t.destination.address) == 0 || sscanf(t.destination.address, " %c", &check) != 1) {
     printf("Khong duoc de trong! Vui long nhap lai: ");
     fgets(t.destination.address, sizeof(t.destination.address), stdin);
     t.destination.address[strcspn(t.destination.address, "\n")] = '\0';
@@ -160,7 +151,8 @@ void updateTrip() {
     printf("Nhap ma chuyen can cap nhat: ");
     fgets(id, sizeof(id), stdin);
     id[strcspn(id, "\n")] = '\0';
-    while(strlen(id) == 0) {
+    
+    while(strlen(id) == 0 || sscanf(id, " %c", &check) != 1) {
     printf("Khong duoc de trong! Vui long nhap lai: ");
     fgets(id, sizeof(id), stdin);
     id[strcspn(id, "\n")] = '\0';
@@ -182,7 +174,8 @@ void updateTrip() {
 
     printf("Nhap noi khoi hanh moi: ");
     fgets(input, sizeof(input), stdin);
-    while(strlen(input) == 0) {
+    
+    while(strlen(input) == 0 || sscanf(input, " %c", &check) != 1) {
     printf("Khong duoc de trong! Vui long nhap lai: ");
     fgets(input, sizeof(input), stdin);
     id[strcspn(input, "\n")] = '\0';
@@ -194,7 +187,8 @@ void updateTrip() {
 
     printf("Nhap vung bat dau moi: ");
     fgets(input, sizeof(input), stdin);
-    while(strlen(input) == 0) {
+    
+    while(strlen(input) == 0 || sscanf(input, " %c", &check) != 1) {
     printf("Khong duoc de trong! Vui long nhap lai: ");
     fgets(input, sizeof(input), stdin);
     id[strcspn(input, "\n")] = '\0';
@@ -206,7 +200,8 @@ void updateTrip() {
 
     printf("Nhap diem den moi: ");
     fgets(input, sizeof(input), stdin);
-    while(strlen(input) == 0) {
+    
+    while(strlen(input) == 0 || sscanf(input, " %c", &check) != 1) {
     printf("Khong duoc de trong! Vui long nhap lai: ");
     fgets(input, sizeof(input), stdin);
     id[strcspn(input, "\n")] = '\0';
@@ -218,7 +213,8 @@ void updateTrip() {
 
     printf("Nhap vung den moi: ");
     fgets(input, sizeof(input), stdin);
-    while(strlen(input) == 0) {
+    
+    while(strlen(input) == 0 || sscanf(input, " %c", &check) != 1) {
     printf("Khong duoc de trong! Vui long nhap lai: ");
     fgets(input, sizeof(input), stdin);
     id[strcspn(input, "\n")] = '\0';
@@ -292,11 +288,21 @@ void bookTicket() {
     printf("Nhap ten hanh khach: ");
     fgets(tk.passenger.name, sizeof(tk.passenger.name), stdin);
     tk.passenger.name[strcspn(tk.passenger.name, "\n")] = '\0';
-
+    
+    while(strlen(tk.passenger.name) == 0 || sscanf(tk.passenger.name, " %c", &check) != 1) {
+    printf("Khong duoc de trong! Vui long nhap lai: ");
+    fgets(tk.passenger.name, sizeof(tk.passenger.name), stdin);
+    tk.passenger.name[strcspn(tk.passenger.name, "\n")] = '\0';
+}
     printf("Nhap SDT: ");
     fgets(tk.passenger.phone, sizeof(tk.passenger.phone), stdin);
     tk.passenger.phone[strcspn(tk.passenger.phone, "\n")] = '\0';
-
+    
+    while(strlen(tk.passenger.phone) == 0 || sscanf(tk.passenger.phone, " %c", &check) != 1) {
+    printf("Khong duoc de trong! Vui long nhap lai: ");
+    fgets(tk.passenger.phone, sizeof(tk.passenger.phone), stdin);
+    tk.passenger.phone[strcspn(tk.passenger.phone, "\n")] = '\0';
+}
     printf("Nhap so ghe (1 -> %d): ", t->totalSeats);
     scanf("%d", &tk.seatNumber);
     while (getchar() != '\n');
@@ -305,8 +311,6 @@ void bookTicket() {
         printf("!!! So ghe khong hop le!\n");
         return;
     }
-
-    
     for (int i = 0; i < ticketCount; i++) {
         if (strcmp(tickets[i].tripId, t->tripId) == 0 &&
             tickets[i].seatNumber == tk.seatNumber) {
@@ -408,6 +412,7 @@ void listTripsPaging() {
         printf("--------------------------------------------------------------------\n");
 
         for (int i = start; i < end; i++) {
+        	
             printf("%-10s | %-15s | %-15s | %-12s | %2d/%d\n",
                    trips[i].tripId,
                    trips[i].departure.name,
@@ -612,7 +617,7 @@ int main() {
         printf("|===================================================|\n");
         printf("|                7. Khoa / Huy Ve                   |\n");
         printf("|===================================================|\n");
-        printf("|             8. Bao Cao Thong Ke & Doanh Thu       |\n");
+        printf("|         8. Bao Cao Thong Ke & Doanh Thu           |\n");
         printf("|===================================================|\n");
         printf("|                   0. Thoat                        |\n");
         printf("|===================================================|\n");
